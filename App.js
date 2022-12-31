@@ -5,9 +5,9 @@
  * @format
  * @flow strict-local
  */
-
+import Icon from 'react-native-vector-icons/AntDesign';
 import React from 'react';
-import type {Node} from 'react';
+// import type {Node} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -28,7 +28,7 @@ import {
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
-const Section = ({children, title}): Node => {
+const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -54,7 +54,7 @@ const Section = ({children, title}): Node => {
   );
 };
 
-const App: () => Node = () => {
+const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -88,6 +88,7 @@ const App: () => Node = () => {
           <Section title="Learn More">
             Read the docs to discover what to do next:
           </Section>
+          <Icon name="book" size={30} color="#4F8EF7" />
           <LearnMoreLinks />
         </View>
       </ScrollView>
