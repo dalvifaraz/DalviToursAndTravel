@@ -7,112 +7,95 @@
  */
 import Icon from 'react-native-vector-icons/AntDesign';
 import React from 'react';
-// import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import axios from 'axios';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {colors} from './Styles/color';
+import OfferScreen from './Screens/OfferScreen';
+import HomeScreen from './Screens/HomeScreen';
+import FavoriteScreen from './Screens/FavoriteScreen';
+import SearchScreen from './Screens/SearchScreen';
+import SettingsScreen from './Screens/SettingsScreen';
+import DetailScreen from './Screens/DetailScreen';
+import HotelScreen from './Screens/HotelScreen';
+import NewScreen from './Screens/NewScreen';
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
-const Section = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
+
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function HomeStackScreen() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <Stack.Navigator
+      screenOptions={({route}) => ({
+        headerStyle: {backgroundColor: colors.headerBackgroundColor},
+        headerTitleStyle: {color: colors.headerFontColor},
+      })}>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Hotel" component={HotelScreen} />
+      <Stack.Screen name="Details" component={DetailScreen} />
+    </Stack.Navigator>
   );
-};
+}
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <Icon name="book" size={30} color="#4F8EF7" />
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    // <SafeAreaView>
+      <NavigationContainer>
+        <Tab.Navigator
+          initialRouteName="HomePage"
+          screenOptions={({route}) => ({
+            headerShown: route.name !== 'HomePage' && true,
+            headerStyle: {backgroundColor: colors.headerBackgroundColor},
+            headerTitleStyle: {color: colors.headerFontColor},
+            tabBarIcon: ({focused, color, size}) => {
+              let iconName;
+              switch (route.name) {
+                case 'Search':
+                  iconName = focused ? 'search' : 'search-outline';
+                  break;
+                case 'Favorite':
+                  iconName = focused ? 'star' : 'star-outline';
+                  break;
+                case 'HomePage':
+                  iconName = focused ? 'home' : 'home-outline';
+                  break;
+                case 'Offers':
+                  iconName = focused ? 'pricetags' : 'pricetags-outline';
+                  break;
+                case 'Settings':
+                  iconName = focused ? 'ios-list' : 'ios-list-outline';
+                  break;
+              }
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            tabBarActiveTintColor: colors.tabIconColorFocused,
+            tabBarInactiveTintColor: colors.tabIconColor,
+            tabBarStyle: {
+              backgroundColor: colors.tabBackgroundColor,
+              paddingTop: 10,
+            },
+          })}>
+          <Tab.Screen name="Search" component={SearchScreen} />
+          <Tab.Screen
+            name="Favorite"
+            component={FavoriteScreen}
+            options={{tabBarBadge: 3, tabBarBadgeStyle: {opacity: 0.7}}}
+          />
+          <Tab.Screen name="HomePage" component={HomeStackScreen} />
+          <Tab.Screen name="Offers" component={OfferScreen} />
+          <Tab.Screen name="Settings" component={SettingsScreen} />
+        </Tab.Navigator>
+      </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+const styles = StyleSheet.create({});
 
 export default App;
