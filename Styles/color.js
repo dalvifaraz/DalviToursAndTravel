@@ -9,4 +9,7 @@ export const colors = {
   info: '#2196F3',
   warning: '#eaaf10',
   error: '#e64552',
+  iconPressColor: '#FFFFFF',
+  buttonPressedFontColor: '#FFFFFF',
+  buttonPressedBackgroundColor: '#f5717e'
 };

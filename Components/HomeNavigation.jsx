@@ -1,6 +1,7 @@
 import {Pressable, StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {colors} from '../Styles/color'
 
 const HomeNavigation = ({show, setShow}) => {
   const homeNavIcon = [
@@ -26,7 +27,7 @@ const HomeNavigation = ({show, setShow}) => {
               <Ionicons
                 name={icon.name}
                 size={24}
-                color={pressed ? 'black':icon.color}
+                color={pressed ? colors.iconPressColor:icon.color}
               />
               </>
             )}

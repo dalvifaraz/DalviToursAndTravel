@@ -27,10 +27,12 @@ export const ModalComponent = ({
   destinationList,
   dateRange,
   setDateRange,
+  setDestinationId,
   //   handleOnLocationSelect
 }) => {
-  const handleOnLocationSelect = value => {
+  const handleOnLocationSelect = (value, id) => {
     onChangeText(value);
+    setDestinationId(id);
     setModal({visible: false, name: ''});
   };
 
@@ -70,13 +72,13 @@ export const ModalComponent = ({
                     <TouchableOpacity
                       key={index}
                       onPress={() =>
-                        handleOnLocationSelect(item.regionNames.shortName)
+                        handleOnLocationSelect(item.name, item.destinationId)
                       }>
                       <View style={styles.destinationCard}>
                         <Text
                           style={
                             styles.text
-                          }>{`${item.regionNames.shortName}`}</Text>
+                          }>{`${item.name}`}</Text>
                       </View>
                     </TouchableOpacity>
                   ))}
@@ -114,6 +116,7 @@ ModalComponent.propTypes = {
   destinationList: PropTypes.array,
   dateRange: PropTypes.object,
   setDateRange: PropTypes.func,
+  setDestinationId: PropTypes.func,
 };
 
 // Same approach for defaultProps too
