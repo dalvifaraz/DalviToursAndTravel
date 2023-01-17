@@ -1,13 +1,16 @@
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {commonStyles} from '../Styles/commonStyle';
 import HomeNavigation from '../Components/HomeNavigation';
 import Radio from '../Components/Radio';
+
+const showDefault = {
+  airplane: true,
+  business: false,
+  train: false,
+  bus: false,
+  car: false,
+};
 
 const radioButtonsData = [
   {
@@ -28,20 +31,14 @@ const radioButtonsData = [
 ];
 
 const HomeScreen = ({navigation}) => {
-  const [show, setShow] = useState({
-    airplane: true,
-    business: false,
-    train: false,
-    bus: false,
-    car: false,
-  });
+  const [show, setShow] = useState(showDefault);
 
   const [trip, setTrip] = useState(radioButtonsData[0].value);
 
   useEffect(() => {
     if (show.business) {
       navigation.navigate('Hotel');
-      setShow(show);
+      setShow(showDefault);
     }
   }, [show]);
 
@@ -94,12 +91,12 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   contentContainer: {
-    borderColor: 'black',
-    borderWidth: 2,
+    // borderColor: 'black',
+    borderWidth: 1,
   },
   detailContainer: {
-    borderColor: 'green',
-    borderWidth: 2,
+    // borderColor: 'green',
+    // borderWidth: 1,
     // paddingHorizontal:8,
   },
   radioButtonContainer: {

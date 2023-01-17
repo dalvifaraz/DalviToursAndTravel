@@ -4,22 +4,17 @@ import {
   View,
   ScrollView,
   Button,
-  Modal,
   Pressable,
-  SafeAreaView,
-  TextInput,
-  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Calendar from 'react-native-calendar-range-picker';
 import moment from 'moment';
-// import { DestinationField } from '../utils/DestinationField';
-// import { fetchDestination } from '../utils/apis';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
+import {ModalComponent as NewModal} from '../Components/Modal';
 
 const HotelScreen = () => {
+  const destinationPlaceHolder = 'Please select the destination';
   const [showCalendar, setShowCalendar] = useState(false);
+  const [modalBackTitle, setModalBackTitle] = useState('Close');
   const [modal, setModal] = useState({
     visible: false,
     name: '',
@@ -28,35 +23,61 @@ const HotelScreen = () => {
     startDate: moment().format('YYYY-MM-DD'),
     endDate: moment().add(1, 'days').format('YYYY-MM-DD'),
   });
+
+  const [totalNumberOfDays, setTotalNumberOfDays] = useState(0);
   const [text, onChangeText] = useState('Mumbai');
   const [destinationList, setDestinationList] = useState([]);
-  //FOR TESTING
-  const handleOnPress = async () => {
-    let data = await axios.get(
-      'https://dalvi-tours-and-travel-server-7r78elcvv-dalvifaraz.vercel.app/api/home',
-    );
-  };
 
+  useEffect(() => {
+    const date1 = new Date(dateRange.startDate);
+    const date2 = new Date(dateRange.endDate);
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    setTotalNumberOfDays(diffDays);
+  }, [dateRange]);
+
+  useEffect(() => {
+    if (modal.visible && modal.name) {
+      if (modal.name === 'location') {
+        setModalBackTitle('Location Search');
+      } else if (modal.name === 'date') {
+        setModalBackTitle('Date Selection');
+      } else if (modal.name === 'count') {
+        setModalBackTitle('Passengers Count');
+      }
+    }
+  }, [modal]);
+
+  const handleSearchLocation2 = async text => {
+    const options = {
+      method: 'GET',
+      url: 'https://hotels4.p.rapidapi.com/locations/v3/search',
+      params: {q: text, locale: 'en_US', langid: '1033', siteid: '300000001'},
+      headers: {
+        'X-RapidAPI-Key': 'b65626a40amsh0456bd2d1beeae0p1b9396jsne29bd62a701b',
+        'X-RapidAPI-Host': 'hotels4.p.rapidapi.com',
+      },
+    };
+
+    axios
+      .request(options)
+      .then(function (response) {
+        if (response.data) {
+          if (response.data.sr) {
+            setDestinationList(response.data.sr);
+          } else {
+            setDestinationList([]);
+          }
+        }
+      })
+      .catch(function (error) {
+        console.error(error, 'HELLO', text);
+      });
+  };
   //For Location Search
   useEffect(() => {
-    handleSearchLocation(text);
+    handleSearchLocation2(text);
   }, [text]);
-
-  const handleSearchLocation = async text => {
-    let url =
-      'https://dalvi-tours-and-travel-server-7r78elcvv-dalvifaraz.vercel.app/api/search-location?subType=CITY&keyword=';
-    try {
-      console.log('HELLO',url + text);
-      let response = await axios.get(url + text);
-      if(response){
-        setDestinationList(response.data.data);
-      }else{
-        setDestinationList([]);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <View style={styles.hotelContainer}>
@@ -64,97 +85,44 @@ const HotelScreen = () => {
         <Pressable
           onPress={() => setModal({...modal, visible: true, name: 'location'})}
           style={styles.searchInputContainer}>
-          <Text>Mumbai</Text>
+          <Text>{text ? text : destinationPlaceHolder}</Text>
         </Pressable>
 
-        <View style={styles.searchInputContainer}>
-          <Text>{dateRange.startDate}</Text>
-          <Text
-            onPress={() => {
-              setShowCalendar(!showCalendar);
-            }}>
-            DATE
-          </Text>
-          <Text>{dateRange.endDate}</Text>
-        </View>
-
-        <Text onPress={handleOnPress}>TEST</Text>
-
         <Pressable
-          onPress={() => setModal({...modal, visible: true, name: 'count'})}
+          onPress={() => setModal({...modal, visible: true, name: 'date'})}
+          // onPress={() => setShowCalendar(true)}
           style={styles.searchInputContainer}>
+          <Text>From: {dateRange.startDate}</Text>
+          <Text>{totalNumberOfDays} Night</Text>
+          <Text>To: {dateRange.endDate}</Text>
+        </Pressable>
+        {showCalendar && (
+          <>
+            <Button title="DONE" />
+          </>
+        )}
+
+        <Pressable onPress={() => {}} style={styles.searchInputContainer}>
           <Text>1-Room, 2-Adult, 0-Child</Text>
         </Pressable>
 
-        <View
+        <Pressable
+          onPress={() => {}}
           style={[styles.searchInputContainer, styles.searchButtonContainer]}>
-          <Button title="Search" color="black" />
-        </View>
-
-        {showCalendar && (
-          <Calendar
-            disabledBeforeToday={true}
-            startDate={moment()}
-            endDate={moment().add(1, 'days')}
-            isMonthFirst
-            onChange={({startDate, endDate}) =>
-              setDateRange({...dateRange, startDate, endDate})
-            }
-          />
-        )}
+          <Text>Search</Text>
+        </Pressable>
       </View>
-      <Modal
-        animationType="slide"
-        transparent={false}
+      <NewModal
+        headerTitle={modalBackTitle}
         visible={modal.visible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          // setModalVisible(!modalVisible);
-          setModal({...modal, visible: false, name: ''});
-        }}>
-        <SafeAreaView style={{margin: 8}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text>Location Search</Text>
-            <Ionicons
-              name="close"
-              size={24}
-              onPress={() => setModal({...modal, visible: false, name: ''})}
-            />
-          </View>
-          {modal.name === 'location' && (
-            <>
-              <View>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={onChangeText}
-                  value={text}
-                />
-                <Text style={styles.small}>
-                  keyword that should represent the start of a word in a city
-                  name or code
-                </Text>
-                <View>
-                  {destinationList && destinationList.map((item, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() =>
-                        autoComplete(item.name, item.address.cityCode)
-                      }>
-                      <View style={styles.destinationCard}>
-                        <Text
-                          style={
-                            styles.text
-                          }>{`${item.name}, ${item.address.cityCode}`}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            </>
-          )}
-          {modal.name === 'count' && <Text>Hello Count!</Text>}
-        </SafeAreaView>
-      </Modal>
+        modal={modal}
+        setModal={setModal}
+        onChangeText={onChangeText}
+        text={text}
+        destinationList={destinationList}
+        dateRange={dateRange}
+        setDateRange={setDateRange}
+      />
       <ScrollView>
         {/* {hotelData?.map((hotel, index) => {
           return (
@@ -184,9 +152,8 @@ export default HotelScreen;
 const styles = StyleSheet.create({
   hotelContainer: {},
   hotelSearchContainer: {
-    borderColor: 'green',
-    borderWidth: 1,
     paddingHorizontal: 8,
+    marginVertical: 8,
   },
   hotelImageStyle: {},
   tinyLogo: {
@@ -200,11 +167,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 40,
+    height: 30,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 10,
-    marginVertical: 8,
+    // marginVertical: 8,
+    marginBottom: 8,
     paddingHorizontal: 8,
   },
   searchButtonContainer: {
@@ -212,21 +180,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  small: {
-    fontSize: 12,
-    marginBottom: 20,
-  },
   searchViewContainer: {
     backgroundColor: 'white',
     position: 'absolute',
     marginTop: 100,
     width: '100%',
   },
-  destinationCard: {
-    marginTop: 12,
-    backgroundColor: 'white',
-    padding: 16,
-  },
+
   bold: {
     fontSize: 16,
     fontWeight: '600',
@@ -238,17 +198,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginTop: 12,
     color: 'black',
-  },
-  text: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: 'black',
-  },
-  input: {
-    height: 40,
-    marginVertical: 12,
-    borderWidth: 1,
-    padding: 10,
-    backgroundColor: '#fff',
   },
 });
