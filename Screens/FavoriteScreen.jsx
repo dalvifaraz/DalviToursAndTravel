@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet } from 'react-native'
 import React from 'react'
 import { commonStyles } from '../Styles/commonStyle'
+import { hotelData } from '../Constant/hotelConstant'
+import CardView from '../Components/CardView'
 
 const FavoriteScreen = () => {
   return (
-    <View style={commonStyles.mainContainer}>
-      <Text>FavoriteScreen</Text>
-    </View>
+    <ScrollView style={commonStyles.mainContainer}>
+    <CardView hotelData={hotelData}/>
+    </ScrollView>
   )
 }
 

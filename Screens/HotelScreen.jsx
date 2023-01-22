@@ -11,7 +11,7 @@ import moment from 'moment';
 import axios from 'axios';
 import {ModalComponent} from '../Components/Modal';
 import {colors} from '../Styles/color';
-import {hotelData} from '../Constant/hotelConstant';
+import {hotelData as hotelDataConstant} from '../Constant/hotelConstant';
 import CardView from '../Components/CardView';
 
 const HotelScreen = () => {
@@ -94,7 +94,7 @@ const HotelScreen = () => {
     // }).catch(function (error) {
     //   console.error(error);
     // });
-    setHotelData(hotelData);
+    setHotelData(hotelDataConstant);
   };
 
   return (
@@ -130,7 +130,7 @@ const HotelScreen = () => {
           </TouchableHighlight>
         </View>
 
-        <CardView />
+        <CardView hotelData={hotelData}/>
       </ScrollView>
       <ModalComponent
         headerTitle={modalBackTitle}

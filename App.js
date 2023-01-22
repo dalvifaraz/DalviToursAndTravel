@@ -22,10 +22,6 @@ import SearchScreen from './Screens/SearchScreen';
 import SettingsScreen from './Screens/SettingsScreen';
 import DetailScreen from './Screens/DetailScreen';
 import HotelScreen from './Screens/HotelScreen';
-import NewScreen from './Screens/NewScreen';
-
-/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
- * LTI update could not be added via codemod */
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -86,7 +82,7 @@ const App = () => {
           <Tab.Screen
             name="Favorite"
             component={FavoriteScreen}
-            options={{tabBarBadge: 3, tabBarBadgeStyle: {opacity: 0.7}}}
+            options={{tabBarBadge: 10, tabBarBadgeStyle: {opacity: 0.7}}}
           />
           <Tab.Screen name="HomePage" component={HomeStackScreen} />
           <Tab.Screen name="Offers" component={OfferScreen} />
