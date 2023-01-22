@@ -11,5 +11,6 @@ export const colors = {
   error: '#e64552',
   iconPressColor: '#FFFFFF',
   buttonPressedFontColor: '#FFFFFF',
-  buttonPressedBackgroundColor: '#f5717e'
+  buttonPressedBackgroundColor: '#f5717e',
+  ratingBackgroundColor: '#f5717e',
 };

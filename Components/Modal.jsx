@@ -7,12 +7,14 @@ import {
   TextInput,
   TouchableOpacity,
   Button,
+  ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
-import PropTypes, {func} from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Calendar from 'react-native-calendar-range-picker';
 import moment from 'moment';
+import {locations} from '../Constant/hotelConstant';
 
 export const ModalComponent = ({
   animationType,
@@ -22,16 +24,14 @@ export const ModalComponent = ({
   modal,
   setModal,
   headerTitle,
-  onChangeText,
-  text,
-  destinationList,
+  setLocationSearch,
+  locationSearch,
   dateRange,
   setDateRange,
   setDestinationId,
-  //   handleOnLocationSelect
 }) => {
   const handleOnLocationSelect = (value, id) => {
-    onChangeText(value);
+    setLocationSearch(value);
     setDestinationId(id);
     setModal({visible: false, name: ''});
   };
@@ -54,34 +54,42 @@ export const ModalComponent = ({
         {modal?.name === 'location' && (
           <>
             <View>
-              <View style={styles.inputContainer}>
+              {/* <View style={styles.inputContainer}>
                 <TextInput
-                  onChangeText={onChangeText}
-                  value={text}
-                  placeholder="Enter the destion to..."
+                  style={{paddingHorizontal:16}}
+                  onChangeText={setLocationSearch}
+                  value={locationSearch}
+                  placeholder="Enter the destination to..."
                 />
-                <Button title="CLEAR" onPress={() => onChangeText('')} />
+              </View> */}
+              <View style={styles.inputContainerView}>
+                <TextInput
+                  style={styles.inputContainer}
+                  onChangeText={setLocationSearch}
+                  value={locationSearch}
+                  placeholder="Enter location..."
+                />
+                <Button title="CLEAR" onPress={() => setLocationSearch('')} />
               </View>
               <Text style={styles.small}>
                 keyword that should represent the start of a word in a city name
                 or code
               </Text>
               <View>
-                {destinationList &&
-                  destinationList.map((item, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() =>
-                        handleOnLocationSelect(item.name, item.destinationId)
-                      }>
-                      <View style={styles.destinationCard}>
-                        <Text
-                          style={
-                            styles.text
-                          }>{`${item.name}`}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
+                <ScrollView>
+                  {locations &&
+                    locations.map((item, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() =>
+                          handleOnLocationSelect(item.name, index)
+                        }>
+                        <View style={styles.destinationCard}>
+                          <Text style={styles.text}>{`${item.name}`}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                </ScrollView>
               </View>
             </View>
           </>
@@ -111,9 +119,8 @@ ModalComponent.propTypes = {
   modal: PropTypes.object,
   setModal: PropTypes.func,
   headerTitle: PropTypes.string,
-  onChangeText: PropTypes.func,
-  text: PropTypes.string,
-  destinationList: PropTypes.array,
+  setLocationSearch: PropTypes.func,
+  locationSearch: PropTypes.string,
   dateRange: PropTypes.object,
   setDateRange: PropTypes.func,
   setDestinationId: PropTypes.func,
@@ -134,6 +141,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
+    flex:1,
+  },
+  inputContainerView: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
